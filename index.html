@@ -1,97 +1,76 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Proton Browser</title>
-    <style>
-        body {
-            background: black;
-            color: white;
-            font-family: Arial;
-            text-align: center;
-            margin-top: 100px;
-        }
-
-        h1 {
-            color: #00ff88;
-            font-size: 40px;
-        }
-
-        input {
-            width: 500px;
-            padding: 12px;
-            border-radius: 20px;
-            border: 1px solid #333;
-            background: black;
-            color: white;
-        }
-
-        iframe {
-            width: 90%;
-            height: 500px;
-            border: none;
-            margin-top: 20px;
-        }
-
-        #chat {
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 300px;
-            height: 100%;
-            background: #000;
-            border-left: 1px solid #111;
-            padding: 10px;
-        }
-    </style>
-</head>
-
-<body>
-
-<h1>Proton Browser by Dean</h1>
-
-<input id="search" placeholder="Search the web..." />
-
-<iframe id="web"></iframe>
-
-<div id="chat">
-    <h3>🤖 Sidekick</h3>
-    <div id="messages"></div>
-    <input id="botInput" placeholder="Ask..." />
-</div>
-
 <script>
-const search = document.getElementById("search");
-const web = document.getElementById("web");
+const mainSearch = document.getElementById("mainSearch");
+const topSearch = document.getElementById("topSearch");
 
-search.addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-        web.src = "https://duckduckgo.com/?q=" + search.value;
-    }
+// 🔍 SEARCH (FIXED)
+function search(q) {
+    if (!q) return;
+
+    // open in SAME tab (clean experience)
+    window.location.href = "https://duckduckgo.com/?q=" + encodeURIComponent(q);
+}
+
+// ENTER EVENTS
+mainSearch.addEventListener("keypress", e => {
+    if (e.key === "Enter") search(mainSearch.value);
 });
 
-// 🤖 BOT
+topSearch.addEventListener("keypress", e => {
+    if (e.key === "Enter") search(topSearch.value);
+});
+
+
+// 🤖 AI BOT (UPGRADED)
 const botInput = document.getElementById("botInput");
 const messages = document.getElementById("messages");
 
 function botReply(msg) {
     msg = msg.toLowerCase();
 
-    if (msg.includes("hi")) return "yo 👋";
-    if (msg.includes("time")) return new Date().toLocaleTimeString();
-    if (msg.includes("joke")) return "too many tabs crashed me 💀";
+    // greetings
+    if (msg.includes("hi") || msg.includes("hello"))
+        return "yo 👋 I'm Sidekick";
 
-    return "tell me more 🤖";
+    // identity
+    if (msg.includes("who are you"))
+        return "I'm your Proton AI assistant 🤖";
+
+    // time
+    if (msg.includes("time"))
+        return new Date().toLocaleTimeString();
+
+    // jokes
+    if (msg.includes("joke")) {
+        const jokes = [
+            "too many tabs crashed me 💀",
+            "i told my cpu a joke… now it's processing 😂",
+            "404 joke not found 😭"
+        ];
+        return jokes[Math.floor(Math.random() * jokes.length)];
+    }
+
+    // math
+    if (msg.match(/[\+\-\*\/]/)) {
+        try { return eval(msg); } catch { return "math error 🤔"; }
+    }
+
+    // help
+    if (msg.includes("help"))
+        return "try: time, joke, math, or 'who are you' 💡";
+
+    return "interesting… tell me more 🤖";
 }
 
-botInput.addEventListener("keypress", function(e) {
+// CHAT SYSTEM
+botInput.addEventListener("keypress", e => {
     if (e.key === "Enter") {
         let msg = botInput.value;
-        messages.innerHTML += "<p>You: " + msg + "</p>";
-        messages.innerHTML += "<p>Bot: " + botReply(msg) + "</p>";
+
+        messages.innerHTML += `<p>You: ${msg}</p>`;
+        messages.innerHTML += `<p>Bot: ${botReply(msg)}</p>`;
+
         botInput.value = "";
+        messages.scrollTop = messages.scrollHeight;
     }
 });
 </script>
-
-</body>
-</html>
