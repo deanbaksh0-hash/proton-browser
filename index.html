@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Proton Browser</title>
+    <style>
+        body {
+            background: black;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        h1 {
+            color: #00ff88;
+            font-size: 40px;
+        }
+
+        input {
+            width: 500px;
+            padding: 12px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            background: black;
+            color: white;
+        }
+
+        iframe {
+            width: 90%;
+            height: 500px;
+            border: none;
+            margin-top: 20px;
+        }
+
+        #chat {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background: #000;
+            border-left: 1px solid #111;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Proton Browser by Dean</h1>
+
+<input id="search" placeholder="Search the web..." />
+
+<iframe id="web"></iframe>
+
+<div id="chat">
+    <h3>🤖 Sidekick</h3>
+    <div id="messages"></div>
+    <input id="botInput" placeholder="Ask..." />
+</div>
+
+<script>
+const search = document.getElementById("search");
+const web = document.getElementById("web");
+
+search.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        web.src = "https://duckduckgo.com/?q=" + search.value;
+    }
+});
+
+// 🤖 BOT
+const botInput = document.getElementById("botInput");
+const messages = document.getElementById("messages");
+
+function botReply(msg) {
+    msg = msg.toLowerCase();
+
+    if (msg.includes("hi")) return "yo 👋";
+    if (msg.includes("time")) return new Date().toLocaleTimeString();
+    if (msg.includes("joke")) return "too many tabs crashed me 💀";
+
+    return "tell me more 🤖";
+}
+
+botInput.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        let msg = botInput.value;
+        messages.innerHTML += "<p>You: " + msg + "</p>";
+        messages.innerHTML += "<p>Bot: " + botReply(msg) + "</p>";
+        botInput.value = "";
+    }
+});
+</script>
+
+</body>
+</html>
